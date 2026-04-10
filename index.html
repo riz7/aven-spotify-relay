@@ -3,49 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aven Studio — Spotify Auth</title>
+  <title>Aven Studio — Spotify</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; }
+
     body {
-      background: #0d0d0d; color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex; align-items: center; justify-content: center;
-      min-height: 100vh; flex-direction: column; gap: 16px; padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      background: #c8a0c0;
+      overflow: hidden;
     }
-    h1 { color: #1DB954; font-size: 24px; font-weight: 700; }
-    p  { color: #aaa; font-size: 15px; text-align: center; max-width: 400px; }
+
+    /* ── Animated blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.55;
+      animation: drift 8s ease-in-out infinite alternate;
+    }
+    .blob-1 { width:420px; height:380px; background:#e8c4dc; top:-80px;  left:-60px;  animation-delay:0s; }
+    .blob-2 { width:360px; height:400px; background:#c890b8; bottom:-60px; right:-80px; animation-delay:2s; }
+    .blob-3 { width:280px; height:260px; background:#b870a8; top:30%;    left:35%;    animation-delay:4s; }
+    .blob-4 { width:200px; height:220px; background:#f0d0e8; top:10%;    right:15%;   animation-delay:1s; }
+    @keyframes drift {
+      0%   { transform: translate(0,0)   scale(1);   }
+      50%  { transform: translate(20px,15px) scale(1.05); }
+      100% { transform: translate(-10px,25px) scale(0.97); }
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid rgba(255,255,255,0.55);
+      border-radius: 28px;
+      padding: 48px 44px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(140,80,130,0.25), 0 2px 8px rgba(255,255,255,0.2) inset;
+    }
+
+    .logo {
+      font-size: 52px;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 2px 8px rgba(140,80,130,0.4));
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(80,30,70,0.6);
+      margin-bottom: 28px;
+    }
+
+    /* spinner */
     .spinner {
-      width: 44px; height: 44px;
-      border: 3px solid #222; border-top-color: #1DB954;
-      border-radius: 50%; animation: spin 0.8s linear infinite;
+      width: 48px; height: 48px;
+      border: 3px solid rgba(180,120,160,0.25);
+      border-top-color: rgba(120,50,110,0.8);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+      margin: 0 auto 20px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .big { font-size: 54px; }
-    .green { color: #1DB954; }
-    .red   { color: #ff4444; }
-    small  { color: #444; font-size: 12px; margin-top: 8px; }
+
+    .icon { font-size: 52px; margin-bottom: 16px; }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4a1e48;
+      margin-bottom: 10px;
+    }
+    .sub {
+      font-size: 15px;
+      color: rgba(90,40,80,0.75);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .hint {
+      font-size: 12px;
+      color: rgba(90,40,80,0.45);
+      margin-top: 20px;
+    }
+
+    /* decorative triangles (like the image) */
+    .tri {
+      position: fixed;
+      opacity: 0.12;
+      z-index: 1;
+    }
+    .tri::before, .tri::after {
+      content:'';
+      display:block;
+      width:0; height:0;
+      border-left:10px solid transparent;
+      border-right:10px solid transparent;
+      border-bottom:16px solid #8a4880;
+      margin:6px 0;
+    }
   </style>
 </head>
 <body>
-  <div style="font-size:48px">🎵</div>
-  <h1>Aven Studio</h1>
-  <div id="spinner" class="spinner"></div>
-  <div id="icon" style="display:none"></div>
-  <p id="msg">Redirecting to bot...</p>
-  <p id="sub"></p>
-  <small id="info"></small>
+
+  <!-- blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+
+  <!-- decorative triangles -->
+  <div class="tri" style="top:15%;left:48%"></div>
+  <div class="tri" style="bottom:18%;left:30%"></div>
+  <div class="tri" style="bottom:22%;left:38%"></div>
+  <div class="tri" style="bottom:25%;left:46%"></div>
+
+  <div class="card">
+    <div class="logo">🎵</div>
+    <div class="brand">Aven Studio</div>
+
+    <div id="spinner" class="spinner"></div>
+    <div id="icon"   style="display:none"></div>
+    <h2 id="title">Connecting...</h2>
+    <p  id="sub"   class="sub"></p>
+    <p  id="hint"  class="hint"></p>
+  </div>
 
   <script>
-    // ══════════════════════════════════════════════════════
-    // HOW THIS WORKS:
-    // 1. Spotify redirects here with ?code=X&state=Y
-    // 2. This page redirects the browser to the bot's HTTP
-    //    server directly (window.location = http://...)
-    // 3. The bot's HTTP server shows a success/error page
-    // 4. No fetch() needed → no CORS / mixed content issues
-    //
-    // BOT_CALLBACK = your bot server IP:port
-    // ══════════════════════════════════════════════════════
     const BOT_CALLBACK = 'http://161.97.111.247:25578';
 
     const params = new URLSearchParams(window.location.search);
@@ -53,19 +148,30 @@
     const state  = params.get('state');
     const error  = params.get('error');
 
-    const icon = document.getElementById('icon');
-    const msg  = document.getElementById('msg');
-    const sub  = document.getElementById('sub');
-    const info = document.getElementById('info');
-    const spin = document.getElementById('spinner');
+    const spinner = document.getElementById('spinner');
+    const icon    = document.getElementById('icon');
+    const title   = document.getElementById('title');
+    const sub     = document.getElementById('sub');
+    const hint    = document.getElementById('hint');
 
-    function showErr(text) {
-      spin.style.display = 'none';
+    function showOk(name) {
+      spinner.style.display = 'none';
       icon.style.display = 'block';
-      icon.innerHTML = '<span class="big red">❌</span>';
-      msg.textContent = 'Link failed';
-      sub.textContent = text;
-      info.textContent = 'Close this tab and try again in Discord.';
+      icon.textContent = '✅';
+      title.textContent = 'Spotify Linked!';
+      sub.textContent   = 'Welcome, ' + name + ' — your library is being imported.';
+      hint.textContent  = 'You can close this tab and return to Discord.';
+    }
+
+    function showErr(msg) {
+      spinner.style.display = 'none';
+      icon.style.display = 'block';
+      icon.textContent = '❌';
+      icon.style.fontSize = '48px';
+      title.textContent = 'Link Failed';
+      title.style.color = '#8a2040';
+      sub.textContent   = msg;
+      hint.textContent  = 'Close this tab and run spotify link again in Discord.';
     }
 
     if (error) {
@@ -73,19 +179,13 @@
     } else if (!code || !state) {
       showErr('Missing parameters from Spotify.');
     } else {
-      // ── Redirect browser directly to bot HTTP server ──
-      // Browser navigates there — no fetch, no CORS, no mixed-content block
-      const target = BOT_CALLBACK + '/spotify/callback'
-        + '?code='  + encodeURIComponent(code)
-        + '&state=' + encodeURIComponent(state);
-
-      msg.textContent = 'Connecting to bot...';
-      info.textContent = 'You will be redirected automatically.';
-
-      // Small delay so user sees "Connecting..." before redirect
+      sub.textContent = 'Redirecting to bot server...';
       setTimeout(() => {
-        window.location.href = target;
-      }, 600);
+        window.location.href = BOT_CALLBACK
+          + '/spotify/callback'
+          + '?code='  + encodeURIComponent(code)
+          + '&state=' + encodeURIComponent(state);
+      }, 700);
     }
   </script>
 </body>
